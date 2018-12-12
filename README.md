@@ -4,8 +4,6 @@ A Particle project named code-war-badge
 
 ## Compiling for mesh devices:
 
-*Note: This is NOT a Particle Workbench project! It will be moved into Particle Workbench at a later date.*
-
 In theory, this code should compile for all mesh devices, hopefully the code will one day split functionality up
 reasonablly between the gateway and non-gateway devices.
 

@@ -18,7 +18,7 @@ Adafruit_7segment matrix = Adafruit_7segment();
 #define PIXEL_COUNT 300
 #define PIXEL_TYPE WS2813
 
-//Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
+// Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 
 void setup() {
   pinMode(D7, OUTPUT);
