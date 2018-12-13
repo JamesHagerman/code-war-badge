@@ -8,9 +8,10 @@
 #include "adafruit-led-backpack.h"
 #include "neopixel.h"
 
-void setup();
-void loop();
-#line 10 "src/code-war-badge.ino"
+SYSTEM_THREAD(ENABLED);
+
+SerialLogHandler logHandler(LOG_LEVEL_TRACE);
+
 Adafruit_7segment matrix = Adafruit_7segment();
 
 // IMPORTANT: Set pixel COUNT, PIN and TYPE
@@ -18,7 +19,7 @@ Adafruit_7segment matrix = Adafruit_7segment();
 #define PIXEL_COUNT 300
 #define PIXEL_TYPE WS2813
 
-// Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
+Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 
 void setup() {
   pinMode(D7, OUTPUT);
@@ -30,9 +31,9 @@ void setup() {
   matrix.writeDisplay();
 
   // Neopixel stuff
- // strip.begin();
- // strip.setPixelColor(0, strip.Color(255,255,0));
- // strip.show();
+  strip.begin();
+  strip.setPixelColor(0, strip.Color(255,0,0));
+  strip.show();
 }
 
 void loop() {
