@@ -8,7 +8,9 @@
 #include "adafruit-led-backpack.h"
 #include "neopixel.h"
 
-//SYSTEM_THREAD(ENABLED);
+// Offline mode:
+SYSTEM_MODE(MANUAL);
+SYSTEM_THREAD(ENABLED);
 
 SerialLogHandler logHandler(LOG_LEVEL_TRACE);
 
@@ -17,6 +19,12 @@ Adafruit_AlphaNum4 alpha4 = Adafruit_AlphaNum4();
 const int maxWord = 5; // don't change this...
 char displaybuffer[maxWord] = {' ', ' ', ' ', ' ', '\0'};
 const char blank[maxWord] = {' ', ' ', ' ', ' ', '\0'};
+
+bool btnLeft = false;
+bool btnMiddleTop = false;
+bool btnMiddleBottom = false;
+bool btnRightTop = false;
+bool btnRightBottom = false;
 
 // Adafruit_7segment matrix = Adafruit_7segment();
 // 
@@ -50,6 +58,17 @@ const char blank[maxWord] = {' ', ' ', ' ', ' ', '\0'};
 //   meshStatus = !meshStatus;
 //   digitalWrite(D7, meshStatus);
 // }
+
+void writeWord(const char *word) {
+    if (strlcpy(displaybuffer, word, maxWord) >= maxWord) {
+        // Name longer than expected
+    }
+    alpha4.writeDigitAscii(0, displaybuffer[0]);
+    alpha4.writeDigitAscii(1, displaybuffer[1]);
+    alpha4.writeDigitAscii(2, displaybuffer[2]);
+    alpha4.writeDigitAscii(3, displaybuffer[3]);
+    alpha4.writeDisplay();
+}
 
 void setup() {
   Serial.begin(9600);
@@ -103,11 +122,6 @@ void setup() {
 //   strip.show();
 }
 
-bool btnLeft = false;
-bool btnMiddleTop = false;
-bool btnMiddleBottom = false;
-bool btnRightTop = false;
-bool btnRightBottom = false;
 
 void loop() {
 //  digitalWrite(D7, HIGH);
@@ -141,15 +155,6 @@ void loop() {
     }
 }
 
-void writeWord(const char *word) {
-    if (strlcpy(displaybuffer, word, maxWord) >= maxWord) {
-        // Name longer than expected
-    }
-    alpha4.writeDigitAscii(0, displaybuffer[0]);
-    alpha4.writeDigitAscii(1, displaybuffer[1]);
-    alpha4.writeDigitAscii(2, displaybuffer[2]);
-    alpha4.writeDigitAscii(3, displaybuffer[3]);
-    alpha4.writeDisplay();
-}
+
 
 
