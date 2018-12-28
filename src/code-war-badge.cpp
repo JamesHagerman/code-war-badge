@@ -44,6 +44,7 @@ typedef struct {
   int id;
   int pc; // program counter (next opcode to execute in memory)
   int state;
+  int program; // The actual program to be edited, and then loaded into a random spot in the emulator's memory for war
 } PROCESS;
 
 // Set how many processes should be allowed to run ay any given time: 
@@ -123,12 +124,14 @@ const char* getName(UI_Modes mode) {
 // Struct to hold the current UI state
 typedef struct {
   UI_Modes mode;
+  int menuVisible;
 } UI_STATE;
 
 UI_STATE uiState;
 
 void initUI() {
   uiState.mode = PLAY;
+  uiState.menuVisible = false;
 }
 
 void showCurrentMode() {
@@ -237,6 +240,33 @@ void setup() {
 //   strip.show();
 }
 
+void buttonTest() {
+  if (btnLeft) {
+      writeWord("left");
+  } else if (btnMiddleTop) {
+      writeWord("mTop");
+  } else if (btnMiddleBottom) {
+      writeWord("mBtm");
+  } else if (btnRightTop) {
+      writeWord("rTop");
+  } else if (btnRightBottom) {
+      writeWord("rBtm");
+  } else {
+      alpha4.clear();
+      alpha4.writeDisplay();
+  }
+}
+
+void handleUIStateChange() {
+  // In theory, when this method is called ever 100ms, we will take all of the existing input, and existing state
+  // and determine what state changes have occured. Once we determine a state change has indeeded happened, we will
+  // respond accordingly by updating state objects and using those state objects to display new UI messages.
+  if (btnMiddleBottom) {
+    uiState.menuVisible = true;
+  } else {
+    uiState.menuVisible = false;
+  }
+}
 
 void loop() {
 //  digitalWrite(D7, HIGH);
@@ -248,26 +278,21 @@ void loop() {
 //   Mesh.publish("mesh-msg", "GW ping");
 //   delay(100);
 // #endif
-    btnLeft = !digitalRead(D5);
-    btnMiddleTop = !digitalRead(D6);
-    btnMiddleBottom = !digitalRead(A3);
-    btnRightTop = !digitalRead(D2);
-    btnRightBottom = !digitalRead(D9);
+  
+  btnLeft = !digitalRead(D5);
+  btnMiddleTop = !digitalRead(D6);
+  btnMiddleBottom = !digitalRead(A3);
+  btnRightTop = !digitalRead(D2);
+  btnRightBottom = !digitalRead(D9);
 
-    if (btnLeft) {
-        writeWord("left");
-    } else if (btnMiddleTop) {
-        writeWord("mTop");
-    } else if (btnMiddleBottom) {
-        writeWord("mBtm");
-    } else if (btnRightTop) {
-        writeWord("rTop");
-    } else if (btnRightBottom) {
-        writeWord("rBtm");
-    } else {
-        alpha4.clear();
-        alpha4.writeDisplay();
-    }
+  static uint32_t nextUIUpdate = millis();
+  if ((int32_t)(millis() - nextUIUpdatet) > 0) {
+    nextUIUpdate += 100;
+    //buttonTest();
+    handleUIStateChange();
+    displayUI();
+  }
+
 }
 
 
