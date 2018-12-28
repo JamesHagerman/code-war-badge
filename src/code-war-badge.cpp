@@ -102,7 +102,7 @@ void initUI() {
   uiState.mode = PLAY;
 }
 
-void displayMode() {
+void showCurrentMode() {
   const char* currentMode = getName(uiState.mode);
   writeWord(currentMode);
   delay(500);
@@ -146,27 +146,40 @@ void displayMode() {
 void setup() {
   Serial.begin(9600);
 
-    pinMode(D7, OUTPUT);
+  // Setup network:
+  Mesh.off();
 
-    // Internal pullups means buttons should short to ground:
-    pinMode(D5, INPUT_PULLUP); //left
-    pinMode(D6, INPUT_PULLUP); //top middle
-    pinMode(A3, INPUT_PULLUP); //bottom middle
-    pinMode(D2, INPUT_PULLUP); //top right
-    pinMode(D9, INPUT_PULLUP); //bottom right
+  // Init the hardware:
+  pinMode(D7, OUTPUT);
 
-    Serial.begin(9600);
+  // Internal pullups means buttons should short to ground:
+  pinMode(D5, INPUT_PULLUP); //left
+  pinMode(D6, INPUT_PULLUP); //top middle
+  pinMode(A3, INPUT_PULLUP); //bottom middle
+  pinMode(D2, INPUT_PULLUP); //top right
+  pinMode(D9, INPUT_PULLUP); //bottom right
 
-    alpha4.begin(0x70);  // pass in the address
+  // Init the screen:
+  alpha4.begin(0x70);  // pass in the address
 
-    writeWord("Code");
-    delay(500);
+  // Done with hardware, Now init the software:
+  initCPU(); // Initialize our CPU Emulation
+  initUI(); // Initialize our UI:
 
-    writeWord("War ");
-    delay(1500);
+  // Show the world we're ready!
+  writeWord("Code");
+  delay(500);
+  writeWord("War ");
+  delay(500);
+  alpha4.clear();
+  alpha4.writeDisplay();
+  delay(500);
 
-    alpha4.clear();
-    alpha4.writeDisplay();
+  // Show our current mode:
+  // Note: Mode should only really be shown when it's changed...
+  showCurrentMode();
+
+  // Old code:
 //   pinMode(D7, OUTPUT);
 // 
 //   // Setup some GW pinging stuff:
