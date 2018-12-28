@@ -19,12 +19,94 @@ Adafruit_AlphaNum4 alpha4 = Adafruit_AlphaNum4();
 const int maxWord = 5; // don't change this...
 char displaybuffer[maxWord] = {' ', ' ', ' ', ' ', '\0'};
 const char blank[maxWord] = {' ', ' ', ' ', ' ', '\0'};
+// TODO: Move all ui management methods to another file:
+void writeWord(const char *word) {
+    if (strlcpy(displaybuffer, word, maxWord) >= maxWord) {
+        // Name longer than expected
+    }
+    alpha4.writeDigitAscii(0, displaybuffer[0]);
+    alpha4.writeDigitAscii(1, displaybuffer[1]);
+    alpha4.writeDigitAscii(2, displaybuffer[2]);
+    alpha4.writeDigitAscii(3, displaybuffer[3]);
+    alpha4.writeDisplay();
+}
 
 bool btnLeft = false;
 bool btnMiddleTop = false;
 bool btnMiddleBottom = false;
 bool btnRightTop = false;
 bool btnRightBottom = false;
+
+//==================
+// CPU Emulation
+// Define a basic process state
+typedef struct {
+  int id;
+  int pc; // program counter (next opcode to execute in memory)
+  int state;
+} PROCESS;
+
+// Set how many processes should be allowed to run ay any given time: 
+const int processMax = 10;
+// Starting to define a struct that will hold the minimal cpu emulator state
+typedef struct {
+  bool running;
+  // TODO: Figure out how to manage storing and indexing processes in the master list:
+  int pid; // next process to execute
+  PROCESS processes[processMax]; // List of all known processes
+} CPU;
+
+CPU cpu;
+
+void initCPU() {
+  cpu.running = false;
+  cpu.pid = -1;
+}
+
+// Process management functions:
+//int addProcess(PROCESS newProcess) {
+//  int processSlot = findEmptyProcessSlot();
+//  cpu.processess
+//}
+//
+//int removeProcess(int processSlot) {
+//  cpu.processess[processSlot] = 
+//}
+
+//================
+// UI Management
+//
+// Configure Modes, their names, and their values:
+enum UI_Modes {
+  PLAY = 0x0,
+  RUN = 0x1,
+  VIEW = 0x2,
+  EDIT = 0x3
+};
+const int maxModes = 4; // Should match how many Modes in the Enum above...
+const int maxModeNameLen = 5;
+const char modeNames[maxModes][maxModeNameLen] = {"Play", "Run ","View","Edit"};
+
+const char* getName(UI_Modes mode) {
+  return modeNames[mode];
+}
+
+// Struct to hold the current UI state
+typedef struct {
+  UI_Modes mode;
+} UI_STATE;
+
+UI_STATE uiState;
+
+void initUI() {
+  uiState.mode = PLAY;
+}
+
+void displayMode() {
+  const char* currentMode = getName(uiState.mode);
+  writeWord(currentMode);
+  delay(500);
+}
 
 // Adafruit_7segment matrix = Adafruit_7segment();
 // 
@@ -59,16 +141,7 @@ bool btnRightBottom = false;
 //   digitalWrite(D7, meshStatus);
 // }
 
-void writeWord(const char *word) {
-    if (strlcpy(displaybuffer, word, maxWord) >= maxWord) {
-        // Name longer than expected
-    }
-    alpha4.writeDigitAscii(0, displaybuffer[0]);
-    alpha4.writeDigitAscii(1, displaybuffer[1]);
-    alpha4.writeDigitAscii(2, displaybuffer[2]);
-    alpha4.writeDigitAscii(3, displaybuffer[3]);
-    alpha4.writeDisplay();
-}
+
 
 void setup() {
   Serial.begin(9600);
