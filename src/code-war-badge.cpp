@@ -76,6 +76,35 @@ void initCPU() {
 //================
 // UI Management
 //
+// How the UI works
+// 
+// The UI should be configured so the device always boots into "play" mode. This will allow everyone's default warrior
+// program to run out of the box.
+//
+// A user should be able to use a key sequence to switch to another mode. Holding the middle bottom switch will work
+// okay for this on the dev board I've built. When that switch is held it should flash "Pick, Mode, +- ". The user
+// should then be able to use the other keys to scroll through the modes. Current mode should be included, non-current
+// modes should flash (or maybe use the dots some how for this?). When the middle bottom switch is released, the UI will
+// switch to that new mode.
+//
+// Each mode should have a menu of it's own if need calls for one. So let's just call it a Menu button and go from
+// there.
+//
+// Each mode will also display different things. Perhaps the display will be changed based on settings in the menu?
+//
+// If nothing else:
+//  Play will need to show current health, number of times played, wins, and losses.
+//  Run will probably need to show the current state of war it's playing in...
+//  View and Edit will need to show address, and opcode at that address. How many addresses? How many opcodes?
+//
+// Because of the limited UI, menu diving will unfortunately be a thing. Limiting that will be difficult without
+// limiting the functionality of the device. Maybe just "Play" and "Edit" modes will be enough.
+//
+// Play can have running stats,
+// Edit can have things like "lock, Unlock", Clear all, maybe "select, copy, paste"?
+//
+// For opcode reference, we should just use a silk screen...
+//
 // Configure Modes, their names, and their values:
 enum UI_Modes {
   PLAY = 0x0,
