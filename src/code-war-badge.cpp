@@ -8,8 +8,12 @@
 #include "adafruit-led-backpack.h"
 #include "neopixel.h"
 
-// Offline mode:
-SYSTEM_MODE(MANUAL);
+// Offline mode (for xenons and cloudless):
+// SYSTEM_MODE(MANUAL);
+
+// Online mode:
+SYSTEM_MODE(AUTOMATIC);
+
 SYSTEM_THREAD(ENABLED);
 
 SerialLogHandler logHandler(LOG_LEVEL_TRACE);
@@ -179,7 +183,7 @@ void setup() {
   Serial.begin(9600);
 
   // Setup network:
-  Mesh.off();
+  //Mesh.off();
 
   // Init the hardware:
   pinMode(D7, OUTPUT);
@@ -286,11 +290,13 @@ void loop() {
   btnRightBottom = !digitalRead(D9);
 
   static uint32_t nextUIUpdate = millis();
-  if ((int32_t)(millis() - nextUIUpdatet) > 0) {
+  if ((int32_t)(millis() - nextUIUpdate) > 0) {
     nextUIUpdate += 100;
-    //buttonTest();
+    buttonTest();
+
+    // Not working. Trying to get state management working first:
     handleUIStateChange();
-    displayUI();
+    //displayUI();
   }
 
 }
